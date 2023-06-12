@@ -28,10 +28,10 @@ public class App {
                 case 2: {
                     System.out.println("削除したいタスクの番号を入力してください: ");
                     int removeIndex = sc.nextInt();
-                    if(removeIndex >= 1 && removeIndex <= toDoList.getTasks().size()){
+                    if (removeIndex >= 1 && removeIndex <= toDoList.getTasks().size()) {
                         Task taskToRemove = toDoList.getTasks().get(removeIndex - 1);
                         toDoList.removeTask(taskToRemove);
-                    }else{
+                    } else {
                         System.out.println("無効です");
                     }
                     break;
@@ -76,6 +76,23 @@ public class App {
                     break;
                 }
                 case 5: {
+                    System.out.println("タスクを検索します");
+                    System.out.print("表示したいタスクのIDを入力してください: ");
+                    int taskId = sc.nextInt();
+                    Task task = toDoList.getTaskByIdFromDB(taskId);
+                    if(task != null){
+                        System.out.println("_____________________________________");
+                        System.out.println("タスクID: " + task.getId());
+                        System.out.println("タイトル: " + task.getTitle());
+                        System.out.println("期日: " + task.getDeadline());
+                        System.out.println("ステータス: " + task.getStatus());
+                        System.out.println("_____________________________________");
+                    }else{
+                        System.out.println("指定されたIDのタスクが見つかりません");
+                    }
+                    break;
+                }
+                case 6: {
                     running = false;
                     System.out.println("終了します");
                     break;
@@ -95,7 +112,8 @@ public class App {
         System.out.println("2. タスクの削除");
         System.out.println("3. タスクの編集");
         System.out.println("4. タスクの表示(完成)");
-        System.out.println("5. 終了(完成)");
+        System.out.println("5. タスク検索");
+        System.out.println("6. 終了(完成)");
         System.out.println("選択してください: ");
     }
 }
