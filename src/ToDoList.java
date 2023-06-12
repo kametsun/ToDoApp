@@ -7,7 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 
-
 public class ToDoList {
     private List<Task> tasks;
 
@@ -20,8 +19,8 @@ public class ToDoList {
         addTaskToDB(task);
     }
 
-    public void removeTask(Task task) {
-        tasks.remove(task);
+    public void removeTask(int id) {
+        removeTaskToDB(id);
     }
 
     public void editTask(Task task, String newTitle, LocalDate newDeadline) {
@@ -57,17 +56,17 @@ public class ToDoList {
     }
 
     // タスクをDBに追加
-    public void addTaskToDB(Task task){
-        try(Connection connection = getConnection()){
+    public void addTaskToDB(Task task) {
+        try (Connection connection = getConnection()) {
             String sql = "INSERT INTO tasks (title, deadline, status) VALUES (?, ?, ?)";
-            try (PreparedStatement statement = connection.prepareStatement(sql)){
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setString(1, task.getTitle());
                 statement.setDate(2, java.sql.Date.valueOf(task.getDeadline()));
                 statement.setString(3, task.getStatus());
                 statement.executeUpdate();
             }
             System.out.println("タスクをデータベースに追加しました");
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -77,9 +76,9 @@ public class ToDoList {
         List<Task> tasks = new ArrayList<>();
         try (Connection connection = getConnection()) {
             String sql = "SELECT * FROM tasks";
-            try(PreparedStatement statement = connection.prepareStatement(sql)){
-                try(ResultSet resultSet = statement.executeQuery()){
-                    while(resultSet.next()){
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
                         int id = resultSet.getInt("id");
                         String title = resultSet.getString("title");
                         LocalDate deadline = resultSet.getDate("deadline").toLocalDate();
@@ -93,5 +92,45 @@ public class ToDoList {
             e.printStackTrace();
         }
         return tasks;
+    }
+
+    public void removeTaskToDB(int id) {
+        try(Connection connection = getConnection()){
+            Task taskToRemove = getTaskByIdFromDB(id);
+            if(taskToRemove != null){
+                String query = "DELETE FROM tasks WHERE id = ?";
+                PreparedStatement statement = connection.prepareStatement(query);
+                statement.setInt(1, taskToRemove.getId());
+                statement.executeUpdate();
+                System.out.println("削除に成功しました");
+            }else{
+                System.out.println("指定されたIDのタスクが見つかりません");
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+            System.out.println("削除に失敗しました");
+        }
+    }
+
+    public Task getTaskByIdFromDB(int id) {
+        try (Connection connection = getConnection()) {
+            String query = "SELECT * FROM tasks WHERE id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                int taskId = resultSet.getInt("id");
+                String taskName = resultSet.getString("title");
+                LocalDate deadline = resultSet.getDate("deadline").toLocalDate();
+                String status = resultSet.getString("status");
+                Task task = new Task(taskId, taskName, deadline, status);
+                return task;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("タスクの抽出に成功しました");
+        }
+        return null;
     }
 }

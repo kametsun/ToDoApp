@@ -4,16 +4,6 @@ import java.util.List;
 
 public class App {
 
-    private static void start() {
-        System.out.println("----- ToDo App -----");
-        System.out.println("1. タスクの追加");
-        System.out.println("2. タスクの削除");
-        System.out.println("3. タスクの編集");
-        System.out.println("4. タスクの表示");
-        System.out.println("5. 終了");
-        System.out.println("選択してください: ");
-    }
-
     public static void main(String[] args) throws Exception {
         ToDoList toDoList = new ToDoList();
         Scanner sc = new Scanner(System.in);
@@ -40,8 +30,7 @@ public class App {
                     int removeIndex = sc.nextInt();
                     if (removeIndex >= 1 && removeIndex <= toDoList.getTasks().size()) {
                         Task taskToRemove = toDoList.getTasks().get(removeIndex - 1);
-                        toDoList.removeTask(taskToRemove);
-                        System.out.println("削除に成功");
+                        toDoList.removeTaskToDB(taskToRemove.getId());;
                     } else {
                         System.out.println("無効です");
                     }
@@ -98,5 +87,15 @@ public class App {
             }
         }
         sc.close();
+    }
+
+    private static void start() {
+        System.out.println("----- ToDo App -----");
+        System.out.println("1. タスクの追加(完成)");
+        System.out.println("2. タスクの削除");
+        System.out.println("3. タスクの編集");
+        System.out.println("4. タスクの表示(完成)");
+        System.out.println("5. 終了(完成)");
+        System.out.println("選択してください: ");
     }
 }
