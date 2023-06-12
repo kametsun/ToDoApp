@@ -20,19 +20,26 @@ public class App {
                     System.out.println("期日を入力してください (YYYY-MM-DD)");
                     String strDeadline = sc.nextLine();
                     LocalDate deadline = LocalDate.parse(strDeadline);
-                    Task newTask = new Task(title, deadline);
-                    toDoList.addTask(newTask);
-                    System.out.println("追加に成功しました");
+                    if (printNewTask(title, deadline)) {
+                        Task newTask = new Task(title, deadline);
+                        toDoList.addTask(newTask);
+                        System.out.println("追加に成功しました");
+                    } else {
+                        System.out.println("メニューに戻ります");
+                    }
                     break;
                 }
                 case 2: {
                     System.out.println("削除したいタスクidを入力してください: ");
                     int removeIndex = sc.nextInt();
-                    if (removeIndex >= 1 ) {
+                    if (removeIndex >= 1) {
                         Task taskToRemove = toDoList.getTaskByIdFromDB(removeIndex);
-                        toDoList.removeTask(taskToRemove);
+                        printTask(taskToRemove);
+                        if(confirmRemove()){
+                            toDoList.removeTask(taskToRemove);
+                        }
                     } else {
-                        System.out.println("無効です");
+                        System.out.println("タスクidが無効です");
                     }
                     break;
                 }
@@ -62,11 +69,7 @@ public class App {
                     } else {
                         for (int i = 0; i < tasks.size(); i++) {
                             Task task = tasks.get(i);
-                            System.out.println("タスクid: " + task.getId());
-                            System.out.println("タイトル: " + task.getTitle());
-                            System.out.println("期日: " + task.getDeadline());
-                            System.out.println("ステータス: " + task.getStatus());
-                            System.out.println("-----------------------");
+                            printTask(task);
                         }
                     }
                     break;
@@ -76,15 +79,10 @@ public class App {
                     System.out.print("表示したいタスクのIDを入力してください: ");
                     int taskId = sc.nextInt();
                     Task task = toDoList.getTaskByIdFromDB(taskId);
-                    if(task != null){
-                        System.out.println("_____________________________________");
-                        System.out.println("タスクID: " + task.getId());
-                        System.out.println("タイトル: " + task.getTitle());
-                        System.out.println("期日: " + task.getDeadline());
-                        System.out.println("ステータス: " + task.getStatus());
-                        System.out.println("_____________________________________");
+                    if (task != null) {
+                        printTask(task);
                         nextRemove(task);
-                    }else{
+                    } else {
                         System.out.println("指定されたIDのタスクが見つかりません");
                     }
                     break;
@@ -114,14 +112,54 @@ public class App {
         System.out.print("選択してください: ");
     }
 
-    private static void nextRemove(Task task){
+    private static void nextRemove(Task task) {
         Scanner sc = new Scanner(System.in);
         System.out.print("削除しますか？ y : ");
         String ans = sc.nextLine();
         sc.close();
-        if(ans.equals("y")){
+        if (ans.equals("y")) {
             ToDoList tdl = new ToDoList();
             tdl.removeTask(task);
         }
+    }
+
+    private static void printTask(Task task) {
+        System.out.println("_____________________________________");
+        System.out.println("タスクID: " + task.getId());
+        System.out.println("タイトル: " + task.getTitle());
+        System.out.println("期日: " + task.getDeadline());
+        System.out.println("ステータス: " + task.getStatus());
+        System.out.println("_____________________________________");
+    }
+
+    private static boolean printNewTask(String title, LocalDate deadline) {
+        boolean isAdd = false;
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("_____________________________________");
+        System.out.println("タイトル: " + title);
+        System.out.println("期日: " + deadline);
+        System.out.println("_____________________________________");
+        System.out.print("よろしいですか？ y / n: ");
+        String ans = sc.nextLine();
+
+        if (ans.equals("y")) {
+            isAdd = true;
+        }
+        sc.close();
+        return isAdd;
+    }
+
+    private static boolean confirmRemove() {
+        boolean isRemove = false;
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("削除しますか？ y: ");
+        String ans = sc.nextLine();
+        if(ans.equals("y")){
+            isRemove = true;
+        }
+        sc.close();
+        return isRemove;
     }
 }
