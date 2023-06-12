@@ -83,6 +83,7 @@ public class App {
                         System.out.println("期日: " + task.getDeadline());
                         System.out.println("ステータス: " + task.getStatus());
                         System.out.println("_____________________________________");
+                        nextRemove(task);
                     }else{
                         System.out.println("指定されたIDのタスクが見つかりません");
                     }
@@ -111,5 +112,16 @@ public class App {
         System.out.println("5. タスク検索");
         System.out.println("6. 終了(完成)");
         System.out.print("選択してください: ");
+    }
+
+    private static void nextRemove(Task task){
+        Scanner sc = new Scanner(System.in);
+        System.out.print("削除しますか？ y : ");
+        String ans = sc.nextLine();
+        sc.close();
+        if(ans.equals("y")){
+            ToDoList tdl = new ToDoList();
+            tdl.removeTask(task);
+        }
     }
 }
