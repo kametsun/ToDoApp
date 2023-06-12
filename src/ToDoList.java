@@ -19,10 +19,6 @@ public class ToDoList {
         addTaskToDB(task);
     }
 
-    public void removeTask(int id) {
-        removeTaskToDB(id);
-    }
-
     public void editTask(Task task, String newTitle, LocalDate newDeadline) {
         task.setTitle(newTitle);
         task.setDeadline(newDeadline);
@@ -31,6 +27,15 @@ public class ToDoList {
 
     public List<Task> getTasks() {
         return tasks;
+    }
+
+    public void removeTask(Task task){
+        Task taskFromDB = getTaskByIdFromDB(task.getId());
+        if (taskFromDB != null){
+            removeTaskToDB(taskFromDB.getId());
+        }else{
+            System.out.println("指定されたIDのタスクが見つかりません");
+        }
     }
 
     public void displayTasks() {
@@ -96,12 +101,11 @@ public class ToDoList {
 
     public void removeTaskToDB(int id) {
         try(Connection connection = getConnection()){
-            Task taskToRemove = getTaskByIdFromDB(id);
-            if(taskToRemove != null){
-                String query = "DELETE FROM tasks WHERE id = ?";
-                PreparedStatement statement = connection.prepareStatement(query);
-                statement.setInt(1, taskToRemove.getId());
-                statement.executeUpdate();
+            String query = "DELETE FROM tasks WHERE id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, id);
+            int rowsAffected = statement.executeUpdate();
+            if(rowsAffected > 0){
                 System.out.println("削除に成功しました");
             }else{
                 System.out.println("指定されたIDのタスクが見つかりません");
@@ -126,10 +130,12 @@ public class ToDoList {
                 String status = resultSet.getString("status");
                 Task task = new Task(taskId, taskName, deadline, status);
                 return task;
+            }else{
+                System.out.println("指定されたIDのタスクが見つかりません");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("タスクの抽出に成功しました");
+            System.out.println("タスクの抽出に失敗しました");
         }
         return null;
     }

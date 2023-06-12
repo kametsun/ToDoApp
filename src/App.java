@@ -28,10 +28,10 @@ public class App {
                 case 2: {
                     System.out.println("削除したいタスクの番号を入力してください: ");
                     int removeIndex = sc.nextInt();
-                    if (removeIndex >= 1 && removeIndex <= toDoList.getTasks().size()) {
+                    if(removeIndex >= 1 && removeIndex <= toDoList.getTasks().size()){
                         Task taskToRemove = toDoList.getTasks().get(removeIndex - 1);
-                        toDoList.removeTaskToDB(taskToRemove.getId());;
-                    } else {
+                        toDoList.removeTask(taskToRemove);
+                    }else{
                         System.out.println("無効です");
                     }
                     break;
