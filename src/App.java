@@ -3,21 +3,25 @@ import java.util.Scanner;
 import java.util.List;
 
 public class App {
+
+    private static void start() {
+        System.out.println("----- ToDo App -----");
+        System.out.println("1. タスクの追加");
+        System.out.println("2. タスクの削除");
+        System.out.println("3. タスクの編集");
+        System.out.println("4. タスクの表示");
+        System.out.println("5. 終了");
+        System.out.println("選択してください: ");
+    }
+
     public static void main(String[] args) throws Exception {
         ToDoList toDoList = new ToDoList();
         Scanner sc = new Scanner(System.in);
         boolean running = true;
 
         while (running) {
-            System.out.println("----- ToDo App -----");
-            System.out.println("1. タスクの追加");
-            System.out.println("2. タスクの削除");
-            System.out.println("3. タスクの編集");
-            System.out.println("4. タスクの表示");
-            System.out.println("5. 終了");
-            System.out.println("選択してください: ");
+            start();
             int choice = sc.nextInt();
-
             switch (choice) {
                 case 1: {
                     sc.nextLine();
@@ -64,18 +68,22 @@ public class App {
                 case 4: {
                     System.out.println("----- Task List -----");
                     List<Task> tasks = toDoList.getTasksFromDB();
-                    if(tasks.isEmpty()){
+                    if (tasks.isEmpty()) {
                         System.out.println("タスクはありません");
                     } else {
-                        for(int i = 0; i < tasks.size(); i++){
+                        for (int i = 0; i < tasks.size(); i++) {
                             Task task = tasks.get(i);
                             System.out.println(i + 1 + ": " + task.getTitle());
                             System.out.println("期日: " + task.getDeadline());
                             System.out.println("ステータス: " + task.getStatus());
-                            System.out.println();
+                            System.out.println("-----------------------");
                         }
                     }
-
+                    System.out.println("y で戻る");
+                    String key = sc.nextLine();
+                    if (key.equals("y")) {
+                        main(args);
+                    }
                     break;
                 }
                 case 5: {
@@ -90,6 +98,5 @@ public class App {
             }
         }
         sc.close();
-        System.out.println(System.getProperty("java.class.path"));
     }
 }
