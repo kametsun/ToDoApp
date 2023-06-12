@@ -26,10 +26,10 @@ public class App {
                     break;
                 }
                 case 2: {
-                    System.out.println("削除したいタスクの番号を入力してください: ");
+                    System.out.println("削除したいタスクidを入力してください: ");
                     int removeIndex = sc.nextInt();
-                    if (removeIndex >= 1 && removeIndex <= toDoList.getTasks().size()) {
-                        Task taskToRemove = toDoList.getTasks().get(removeIndex - 1);
+                    if (removeIndex >= 1 ) {
+                        Task taskToRemove = toDoList.getTaskByIdFromDB(removeIndex);
                         toDoList.removeTask(taskToRemove);
                     } else {
                         System.out.println("無効です");
@@ -62,16 +62,12 @@ public class App {
                     } else {
                         for (int i = 0; i < tasks.size(); i++) {
                             Task task = tasks.get(i);
-                            System.out.println(i + 1 + ": " + task.getTitle());
+                            System.out.println("タスクid: " + task.getId());
+                            System.out.println("タイトル: " + task.getTitle());
                             System.out.println("期日: " + task.getDeadline());
                             System.out.println("ステータス: " + task.getStatus());
                             System.out.println("-----------------------");
                         }
-                    }
-                    System.out.println("y で戻る");
-                    String key = sc.nextLine();
-                    if (key.equals("y")) {
-                        main(args);
                     }
                     break;
                 }
@@ -114,6 +110,6 @@ public class App {
         System.out.println("4. タスクの表示(完成)");
         System.out.println("5. タスク検索");
         System.out.println("6. 終了(完成)");
-        System.out.println("選択してください: ");
+        System.out.print("選択してください: ");
     }
 }
