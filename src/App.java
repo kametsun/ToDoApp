@@ -13,9 +13,9 @@ public class App {
         Explanation.explanation();
 
         while (running) {
-
             start();
             int choice = sc.nextInt();
+            sc.nextLine();
             switch (choice) {
                 case 1: {
                     sc.nextLine();
@@ -36,6 +36,7 @@ public class App {
                 case 2: {
                     System.out.println("削除したいタスクidを入力してください: ");
                     int removeIndex = sc.nextInt();
+                    sc.nextLine();
                     if (removeIndex >= 1) {
                         Task taskToRemove = toDoList.getTaskByIdFromDB(removeIndex);
                         printTask(taskToRemove);
@@ -48,33 +49,44 @@ public class App {
                     break;
                 }
                 case 3: {
-                    System.out.println("編集したいタスクidを入力してください: ");
+                    System.out.println("_____________________________________");
+                    System.out.print("編集したいタスクidを入力してください: ");
                     int taskId = sc.nextInt();
-                    Task task = toDoList.getTaskByIdFromDB(taskId);
-                    if (task != null) {
-                        // 編集処理
-                        System.out.println("1: タイトルの変更");
-                        System.out.println("2: 期日");
-                        System.out.println("3: 状態の変更");
-                        System.out.print("選択してください: ");
-                        int select = sc.nextInt();
+                    sc.nextLine();
 
-                        switch (select) {
-                            case 1:{
-                                //タイトルの編集処理
-                                break;
+                    Task task = toDoList.getTaskByIdFromDB(taskId);
+                    printTask(task);
+                    System.out.print("編集するタスクはこれですか？ y: ");
+                    String ans = sc.nextLine();
+                    if (ans.equals("y")) {
+                        if (task != null) {
+                            // 編集処理
+                            System.out.println("項目を選んでください");
+                            System.out.println("1: タイトルの変更");
+                            System.out.println("2: 期日");
+                            System.out.println("3: 状態の変更");
+                            System.out.print("選択してください: ");
+                            int select = sc.nextInt();
+                            sc.nextLine();
+
+                            switch (select) {
+                                case 1: {
+                                    // タイトルの編集処理
+                                    toDoList.editTitleToDB(task);
+                                    break;
+                                }
+                                case 2: {
+                                    // 期日の変更処理
+                                    break;
+                                }
+                                case 3: {
+                                    // 状態の変更処理
+                                    break;
+                                }
                             }
-                            case 2:{
-                                //期日の変更処理
-                                break;
-                            }
-                            case 3:{
-                                //状態の変更処理
-                                break;
-                            }
+                        } else {
+                            System.out.println("指定されたIDのタスクが見つかりません");
                         }
-                    } else {
-                        System.out.println("指定されたIDのタスクが見つかりません");
                     }
                     break;
                 }
@@ -95,6 +107,7 @@ public class App {
                     System.out.println("タスクを検索します");
                     System.out.print("表示したいタスクのIDを入力してください: ");
                     int taskId = sc.nextInt();
+                    sc.nextLine();
                     Task task = toDoList.getTaskByIdFromDB(taskId);
                     if (task != null) {
                         printTask(task);
@@ -112,8 +125,8 @@ public class App {
                 default: {
                     System.out.println("無効です。");
                 }
-                    System.out.println();
             }
+            System.out.println();
         }
         sc.close();
     }

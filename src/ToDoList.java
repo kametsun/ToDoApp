@@ -30,11 +30,11 @@ public class ToDoList {
         return tasks;
     }
 
-    public void removeTask(Task task){
+    public void removeTask(Task task) {
         Task taskFromDB = getTaskByIdFromDB(task.getId());
-        if (taskFromDB != null){
+        if (taskFromDB != null) {
             removeTaskToDB(taskFromDB.getId());
-        }else{
+        } else {
             System.out.println("指定されたIDのタスクが見つかりません");
         }
     }
@@ -101,17 +101,17 @@ public class ToDoList {
     }
 
     public void removeTaskToDB(int id) {
-        try(Connection connection = getConnection()){
+        try (Connection connection = getConnection()) {
             String query = "DELETE FROM tasks WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, id);
             int rowsAffected = statement.executeUpdate();
-            if(rowsAffected > 0){
+            if (rowsAffected > 0) {
                 System.out.println("削除に成功しました");
-            }else{
+            } else {
                 System.out.println("指定されたIDのタスクが見つかりません");
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("削除に失敗しました");
         }
@@ -131,7 +131,7 @@ public class ToDoList {
                 String status = resultSet.getString("status");
                 Task task = new Task(taskId, taskName, deadline, status);
                 return task;
-            }else{
+            } else {
                 System.out.println("指定されたIDのタスクが見つかりません");
             }
         } catch (SQLException e) {
@@ -141,21 +141,39 @@ public class ToDoList {
         return null;
     }
 
-    //タイトル編集
-    public void editTitleToDB(Task task){
+    // タイトル編集
+    public void editTitleToDB(Task task) {
         Scanner sc = new Scanner(System.in);
 
-        try(Connection connection = getConnection()){
-            String query = "UPDATE task SET title = ? WHERE id = ?";
+        System.out.println("変更前のタイトル: " + task.getTitle());
+
+        try (Connection connection = getConnection()) {
+            String query = "UPDATE tasks SET title = ? WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(query);
 
             System.out.print("新しいタイトルを入力してください: ");
             String newTitle = sc.nextLine();
-            //パラメータ指定
-            statement.setString(1, newTitle);
-        }catch(SQLException e){
+
+            if (newTitle != null) {
+                // パラメータ指定
+                statement.setString(1, newTitle);
+                statement.setInt(2, task.getId());
+            } else {
+                System.out.println("空は登録できません");
+                return;
+            }
+
+            // クエリの実行
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("タイトルが更新されました");
+            } else {
+                System.out.println("タイトルが更新に失敗しました");
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("編集できませんでした" + e);
         }
+        sc.close();
     }
 }
