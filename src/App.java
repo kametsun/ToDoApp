@@ -10,6 +10,7 @@ public class App {
         boolean running = true;
 
         while (running) {
+            Explanation.explanation();
             start();
             int choice = sc.nextInt();
             switch (choice) {
