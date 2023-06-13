@@ -33,7 +33,7 @@ public class ToDoList {
     public void removeTask(Task task) {
         Task taskFromDB = getTaskByIdFromDB(task.getId());
         if (taskFromDB != null) {
-            removeTaskToDB(taskFromDB.getId());
+            removeTaskFromDB(taskFromDB.getId());
         } else {
             System.out.println("指定されたIDのタスクが見つかりません");
         }
@@ -79,7 +79,6 @@ public class ToDoList {
 
     // DBからタスクを取得
     public List<Task> getTasksFromDB() {
-        List<Task> tasks = new ArrayList<>();
         try (Connection connection = getConnection()) {
             String sql = "SELECT * FROM tasks";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -100,7 +99,7 @@ public class ToDoList {
         return tasks;
     }
 
-    public void removeTaskToDB(int id) {
+    public void removeTaskFromDB(int id) {
         try (Connection connection = getConnection()) {
             String query = "DELETE FROM tasks WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(query);
@@ -132,7 +131,7 @@ public class ToDoList {
                 Task task = new Task(taskId, taskName, deadline, status);
                 return task;
             } else {
-                System.out.println("指定されたIDのタスクが見つかりません");
+                System.out.println("データベース内に指定されたIDのタスクが見つかりません");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -174,6 +173,5 @@ public class ToDoList {
             e.printStackTrace();
             System.out.println("編集できませんでした" + e);
         }
-        sc.close();
     }
 }

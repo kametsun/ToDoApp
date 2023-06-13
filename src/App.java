@@ -13,40 +13,16 @@ public class App {
         Explanation.explanation();
 
         while (running) {
-            start();
+            displayMenu();
             int choice = sc.nextInt();
-            sc.nextLine();
+            System.out.println();
             switch (choice) {
                 case 1: {
-                    sc.nextLine();
-                    System.out.println("タイトルを入力してください: ");
-                    String title = sc.nextLine();
-                    System.out.println("期日を入力してください (YYYY-MM-DD)");
-                    String strDeadline = sc.nextLine();
-                    LocalDate deadline = LocalDate.parse(strDeadline);
-                    if (printNewTask(title, deadline)) {
-                        Task newTask = new Task(title, deadline);
-                        toDoList.addTask(newTask);
-                        System.out.println("追加に成功しました");
-                    } else {
-                        System.out.println("メニューに戻ります");
-                    }
+                    addTask(sc, toDoList);
                     break;
                 }
                 case 2: {
-                    System.out.println("削除したいタスクidを入力してください: ");
-                    int removeIndex = sc.nextInt();
-                    sc.nextLine();
-                    if (removeIndex >= 1) {
-                        Task taskToRemove = toDoList.getTaskByIdFromDB(removeIndex);
-                        printTask(taskToRemove);
-                        if (confirmRemove()) {
-                            toDoList.removeTask(taskToRemove);
-                        }
-                    } else {
-                        System.out.println("タスクidが無効です");
-                    }
-                    break;
+                    removeTask(sc, toDoList);
                 }
                 case 3: {
                     System.out.println("_____________________________________");
@@ -96,25 +72,14 @@ public class App {
                     if (tasks.isEmpty()) {
                         System.out.println("タスクはありません");
                     } else {
-                        for (int i = 0; i < tasks.size(); i++) {
-                            Task task = tasks.get(i);
+                        for (Task task : tasks) {
                             printTask(task);
                         }
                     }
                     break;
                 }
                 case 5: {
-                    System.out.println("タスクを検索します");
-                    System.out.print("表示したいタスクのIDを入力してください: ");
-                    int taskId = sc.nextInt();
-                    sc.nextLine();
-                    Task task = toDoList.getTaskByIdFromDB(taskId);
-                    if (task != null) {
-                        printTask(task);
-                        nextRemove(task);
-                    } else {
-                        System.out.println("指定されたIDのタスクが見つかりません");
-                    }
+                    searchTaskById(sc, toDoList);
                     break;
                 }
                 case 6: {
@@ -131,7 +96,7 @@ public class App {
         sc.close();
     }
 
-    private static void start() {
+    private static void displayMenu() {
         System.out.println("----- ToDo App -----");
         System.out.println("1. タスクの追加(完成)");
         System.out.println("2. タスクの削除");
@@ -191,5 +156,66 @@ public class App {
         }
         sc.close();
         return isRemove;
+    }
+
+    private static void addTask(Scanner sc, ToDoList toDoList) {
+        sc.nextLine();
+        System.out.print("タイトルを入力してください: ");
+        String title = sc.nextLine();
+        System.out.print("期日を入力してください (YYYY-MM-DD)");
+        String strDeadline = sc.nextLine();
+        LocalDate deadline = LocalDate.parse(strDeadline);
+
+        if (printNewTask(title, deadline)) {
+            Task newTask = new Task(title, deadline);
+            toDoList.addTask(newTask);
+            System.out.println("追加に成功しました");
+        } else {
+            System.out.println("メニューに戻ります");
+        }
+    }
+
+    private static void removeTask(Scanner sc, ToDoList toDoList) {
+        System.out.println("削除したいタスクidを入力してください: ");
+        int removeIndex = sc.nextInt();
+        sc.nextLine();
+        if (removeIndex >= 1) {
+            Task taskToRemove = toDoList.getTaskByIdFromDB(removeIndex);
+            printTask(taskToRemove);
+            if (confirmRemove()) {
+                toDoList.removeTask(taskToRemove);
+            }
+        } else {
+            System.out.println("タスクidが無効です");
+        }
+    }
+
+    private static void searchTaskById(Scanner sc, ToDoList toDoList) {
+        System.out.println("タスクを検索します");
+        System.out.print("表示したいタスクのIDを入力してください: ");
+        int taskId = sc.nextInt();
+        sc.nextLine();
+        Task task = toDoList.getTaskByIdFromDB(taskId);
+        if (task != null) {
+            printTask(task);
+            System.out.println("選択してください");
+            System.out.println("1: このタスクを削除する");
+            System.out.println("2: このタスクを編集する");
+            System.out.println("3: メニューに戻る");
+            int select = sc.nextInt();
+            sc.nextLine();
+            
+            switch (select){
+                case 1:{
+                    nextRemove(task);
+                    break;
+                }
+                case 2:{
+                    
+                }
+            }
+        } else {
+            System.out.println("指定されたIDのタスクが見つかりませんでした");
+        }
     }
 }
