@@ -4,8 +4,6 @@ import java.util.List;
 
 import Explanation.Explanation;
 
-
-
 public class App {
 
     public static void main(String[] args) throws Exception {
@@ -15,7 +13,7 @@ public class App {
         Explanation.explanation();
 
         while (running) {
-            
+
             start();
             int choice = sc.nextInt();
             switch (choice) {
@@ -41,7 +39,7 @@ public class App {
                     if (removeIndex >= 1) {
                         Task taskToRemove = toDoList.getTaskByIdFromDB(removeIndex);
                         printTask(taskToRemove);
-                        if(confirmRemove()){
+                        if (confirmRemove()) {
                             toDoList.removeTask(taskToRemove);
                         }
                     } else {
@@ -50,20 +48,33 @@ public class App {
                     break;
                 }
                 case 3: {
-                    System.out.println("編集したいタスクの番号を入力してください: ");
-                    int editIndex = sc.nextInt();
-                    if (editIndex >= 1 && editIndex <= toDoList.getTasks().size()) {
-                        sc.nextLine();
-                        Task taskToEdit = toDoList.getTasks().get(editIndex - 1);
-                        System.out.println("タスクのタイトル: ");
-                        String newTitle = sc.nextLine();
-                        System.out.println("タスクの期日(YYYY-MM-DD)");
-                        String strNewDeadline = sc.nextLine();
-                        LocalDate newDeadline = LocalDate.parse(strNewDeadline);
-                        toDoList.editTask(taskToEdit, newTitle, newDeadline);
-                        System.out.println("タスクの編集に成功");
+                    System.out.println("編集したいタスクidを入力してください: ");
+                    int taskId = sc.nextInt();
+                    Task task = toDoList.getTaskByIdFromDB(taskId);
+                    if (task != null) {
+                        // 編集処理
+                        System.out.println("1: タイトルの変更");
+                        System.out.println("2: 期日");
+                        System.out.println("3: 状態の変更");
+                        System.out.print("選択してください: ");
+                        int select = sc.nextInt();
+
+                        switch (select) {
+                            case 1:{
+                                //タイトルの編集処理
+                                break;
+                            }
+                            case 2:{
+                                //期日の変更処理
+                                break;
+                            }
+                            case 3:{
+                                //状態の変更処理
+                                break;
+                            }
+                        }
                     } else {
-                        System.out.println("無効です");
+                        System.out.println("指定されたIDのタスクが見つかりません");
                     }
                     break;
                 }
@@ -162,7 +173,7 @@ public class App {
 
         System.out.print("削除しますか？ y: ");
         String ans = sc.nextLine();
-        if(ans.equals("y")){
+        if (ans.equals("y")) {
             isRemove = true;
         }
         sc.close();

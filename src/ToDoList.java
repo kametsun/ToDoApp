@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.util.Scanner;
 
 public class ToDoList {
     private List<Task> tasks;
@@ -138,5 +139,23 @@ public class ToDoList {
             System.out.println("タスクの抽出に失敗しました");
         }
         return null;
+    }
+
+    //タイトル編集
+    public void editTitleToDB(Task task){
+        Scanner sc = new Scanner(System.in);
+
+        try(Connection connection = getConnection()){
+            String query = "UPDATE task SET title = ? WHERE id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            System.out.print("新しいタイトルを入力してください: ");
+            String newTitle = sc.nextLine();
+            //パラメータ指定
+            statement.setString(1, newTitle);
+        }catch(SQLException e){
+            e.printStackTrace();
+            System.out.println("編集できませんでした" + e);
+        }
     }
 }
