@@ -12,9 +12,10 @@ public class App {
         ToDoList toDoList = new ToDoList();
         Scanner sc = new Scanner(System.in);
         boolean running = true;
+        Explanation.explanation();
 
         while (running) {
-            Explanation.explanation();
+            
             start();
             int choice = sc.nextInt();
             switch (choice) {
