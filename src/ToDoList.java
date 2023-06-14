@@ -173,5 +173,6 @@ public class ToDoList {
             e.printStackTrace();
             System.out.println("編集できませんでした" + e);
         }
+        sc.close();
     }
 }
